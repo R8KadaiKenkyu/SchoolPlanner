@@ -1,34 +1,39 @@
-/* =========================================================
- * School Planner
- * timetable.js
- * Complete Edition - 4 Screen Version
- *
- * 対応HTML
- *   #todayClass
- *   #weekTimetable
- *   #timetableEditor
- *   #saveTimetableButton
- *   #clearTimetableButton
- *
- * 対応CSS
- *   .weekCard
- *   .lessonItem
- *   .lessonNumber
- *   .lessonName
- *   .editCard
- *   .lessonEdit
- *   .timetableEmpty
- * ========================================================= */
+/*
+=========================================================
+ School Planner
+ timetable.js
+ Complete Edition
+ Smartphone Input Fixed Version
+
+ 対応HTML
+   #todayClass
+   #weekTimetable
+   #timetableEditor
+   #saveTimetableButton
+   #clearTimetableButton
+
+ 対応CSS
+   .weekCard
+   .lessonItem
+   .lessonNumber
+   .lessonName
+   .editCard
+   .lessonEdit
+   .timetableEmpty
+=========================================================
+*/
 
 (() => {
+
     "use strict";
 
 
-    /* =========================================================
-     * Constants
-     * ========================================================= */
+    /* =====================================================
+       Constants
+    ===================================================== */
 
     const WEEK_KEYS = [
+
         "sun",
         "mon",
         "tue",
@@ -36,10 +41,12 @@
         "thu",
         "fri",
         "sat"
+
     ];
 
 
     const WEEK_NAMES = [
+
         "日",
         "月",
         "火",
@@ -47,41 +54,63 @@
         "木",
         "金",
         "土"
+
     ];
 
 
     const LESSON_COUNT = 7;
 
 
-    /* =========================================================
-     * State
-     * ========================================================= */
+    /* =====================================================
+       State
+    ===================================================== */
 
     let initialized = false;
 
 
-    /* =========================================================
-     * Utility
-     * ========================================================= */
+    /* =====================================================
+       Utility
+    ===================================================== */
 
     function escapeHTML(value) {
+
         return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
     }
 
 
     function getElement(id) {
-        return document.getElementById(id);
+
+        return document.getElementById(
+            id
+        );
+
     }
 
 
-    /* =========================================================
-     * DataAPI
-     * ========================================================= */
+    /* =====================================================
+       DataAPI
+    ===================================================== */
 
     function getLessons(dayKey) {
 
@@ -90,7 +119,9 @@
             typeof DataAPI.getDayTimetable !==
                 "function"
         ) {
+
             return [];
+
         }
 
 
@@ -103,6 +134,7 @@
         return Array.isArray(lessons)
             ? lessons
             : [];
+
     }
 
 
@@ -114,19 +146,19 @@
             lesson === null ||
             lesson === undefined
         ) {
+
             return "";
+
         }
 
 
-        /*
-         * 現在の時間割データは
-         * 文字列でもオブジェクトでも対応
-         */
         if (
             typeof lesson ===
             "string"
         ) {
+
             return lesson;
+
         }
 
 
@@ -134,13 +166,17 @@
             typeof lesson ===
             "number"
         ) {
-            return String(lesson);
+
+            return String(
+                lesson
+            );
+
         }
 
 
         if (
             typeof lesson ===
-                "object"
+            "object"
         ) {
 
             return String(
@@ -149,12 +185,14 @@
                 lesson.title ??
                 ""
             );
+
         }
 
 
         return String(
             lesson
         );
+
     }
 
 
@@ -167,7 +205,9 @@
             typeof lesson !==
                 "object"
         ) {
+
             return "";
+
         }
 
 
@@ -175,37 +215,44 @@
 
 
         if (lesson.teacher) {
+
             parts.push(
                 `先生: ${lesson.teacher}`
             );
+
         }
 
 
         if (lesson.room) {
+
             parts.push(
                 `教室: ${lesson.room}`
             );
+
         }
 
 
         if (lesson.memo) {
+
             parts.push(
                 String(
                     lesson.memo
                 )
             );
+
         }
 
 
         return parts.join(
             " / "
         );
+
     }
 
 
-    /* =========================================================
-     * Today's Key
-     * ========================================================= */
+    /* =====================================================
+       Today's Key
+    ===================================================== */
 
     function getTodayKey() {
 
@@ -217,6 +264,7 @@
             WEEK_KEYS[day] ||
             "sun"
         );
+
     }
 
 
@@ -230,33 +278,39 @@
             WEEK_NAMES[day] ||
             "日"
         );
+
     }
 
 
-    /* =========================================================
-     * Today's Lessons
-     * ========================================================= */
+    /* =====================================================
+       Today's Lessons
+    ===================================================== */
 
     function getTodayLessons() {
 
         return getLessons(
             getTodayKey()
         );
+
     }
 
 
     function lessonCountToday() {
 
         return getTodayLessons()
-            .filter(lesson => {
+            .filter(
+                lesson => {
 
-                return (
-                    getLessonName(
-                        lesson
-                    ).trim() !== ""
-                );
-            })
+                    return (
+                        getLessonName(
+                            lesson
+                        ).trim() !== ""
+                    );
+
+                }
+            )
             .length;
+
     }
 
 
@@ -270,12 +324,13 @@
                 name =>
                     name.trim() !== ""
             );
+
     }
 
 
-    /* =========================================================
-     * Home - Today's Timetable
-     * ========================================================= */
+    /* =====================================================
+       Home - Today's Timetable
+    ===================================================== */
 
     function renderTodayClass() {
 
@@ -286,7 +341,9 @@
 
 
         if (!container) {
+
             return;
+
         }
 
 
@@ -298,18 +355,23 @@
             lessons
                 .map(
                     (lesson, index) => ({
+
                         lesson,
                         index
+
                     })
                 )
-                .filter(item => {
+                .filter(
+                    item => {
 
-                    return (
-                        getLessonName(
-                            item.lesson
-                        ).trim() !== ""
-                    );
-                });
+                        return (
+                            getLessonName(
+                                item.lesson
+                            ).trim() !== ""
+                        );
+
+                    }
+                );
 
 
         if (
@@ -318,64 +380,88 @@
         ) {
 
             container.innerHTML = `
+
                 <div class="timetableEmpty">
+
                     今日の授業はありません
+
                 </div>
+
             `;
 
             return;
+
         }
 
 
         container.innerHTML =
             visibleLessons
-                .map(item => {
+                .map(
+                    item => {
 
-                    const name =
-                        getLessonName(
-                            item.lesson
-                        );
-
-
-                    const detail =
-                        getLessonDetail(
-                            item.lesson
-                        );
+                        const name =
+                            getLessonName(
+                                item.lesson
+                            );
 
 
-                    return `
-                        <div class="lessonItem">
+                        const detail =
+                            getLessonDetail(
+                                item.lesson
+                            );
 
-                            <div class="lessonNumber">
-                                ${item.index + 1}限
+
+                        return `
+
+                            <div class="lessonItem">
+
+                                <div class="lessonNumber">
+
+                                    ${item.index + 1}限
+
+                                </div>
+
+
+                                <div class="lessonName">
+
+                                    ${escapeHTML(
+                                        name
+                                    )}
+
+                                    ${
+                                        detail
+                                            ? `
+
+                                                <div class="lessonDetail">
+
+                                                    ${escapeHTML(
+                                                        detail
+                                                    )}
+
+                                                </div>
+
+                                            `
+                                            : ""
+                                    }
+
+                                </div>
+
                             </div>
 
-                            <div class="lessonName">
-                                ${escapeHTML(name)}
+                        `;
 
-                                ${
-                                    detail
-                                        ? `
-                                            <div class="lessonDetail">
-                                                ${escapeHTML(
-                                                    detail
-                                                )}
-                                            </div>
-                                        `
-                                        : ""
-                                }
-                            </div>
+                    }
+                )
+                .join(
+                    ""
+                );
 
-                        </div>
-                    `;
-                })
-                .join("");
     }
 
 
-    /* =========================================================
-     * Weekly Timetable
-     * ========================================================= */
+    /* =====================================================
+       Weekly Timetable
+    ===================================================== */
 
     function renderWeekTable() {
 
@@ -387,11 +473,8 @@
 
         if (!target) {
 
-            console.warn(
-                "Timetable: #weekTimetable が見つかりません。"
-            );
-
             return;
+
         }
 
 
@@ -399,7 +482,10 @@
 
 
         WEEK_KEYS.forEach(
-            (key, dayIndex) => {
+            (
+                key,
+                dayIndex
+            ) => {
 
                 const lessons =
                     getLessons(
@@ -417,23 +503,33 @@
 
 
                 html += `
+
                     <div class="weekCard">
 
                         <h3>
+
                             ${WEEK_NAMES[dayIndex]}曜日
+
                         </h3>
+
                 `;
 
 
                 if (!hasLessons) {
 
                     html += `
+
                         <div class="timetableEmpty">
+
                             授業が登録されていません
+
                         </div>
+
                     `;
 
-                } else {
+                }
+
+                else {
 
                     for (
                         let i = 0;
@@ -458,18 +554,19 @@
                             );
 
 
-                        /*
-                         * 空欄の時限も
-                         * 位置を保持して表示
-                         */
                         html += `
+
                             <div class="lessonItem">
 
                                 <div class="lessonNumber">
+
                                     ${i + 1}限
+
                                 </div>
 
+
                                 <div class="lessonName">
+
                                     ${
                                         name
                                             ? escapeHTML(
@@ -481,37 +578,103 @@
                                     ${
                                         detail
                                             ? `
+
                                                 <div class="lessonDetail">
+
                                                     ${escapeHTML(
                                                         detail
                                                     )}
+
                                                 </div>
+
                                             `
                                             : ""
                                     }
+
                                 </div>
 
                             </div>
+
                         `;
+
                     }
+
                 }
 
 
                 html += `
+
                     </div>
+
                 `;
+
             }
         );
 
 
         target.innerHTML =
             html;
+
     }
 
 
-    /* =========================================================
-     * Editor
-     * ========================================================= */
+    /* =====================================================
+       ★ Editor Focus Check
+
+       入力中のinputを再生成すると、
+       スマートフォンではキーボードが閉じたり
+       入力できなくなる。
+
+       そのため、現在入力中なら
+       renderEditor()を実行しない。
+    ===================================================== */
+
+    function isEditorFocused() {
+
+        const active =
+            document.activeElement;
+
+
+        if (!active) {
+
+            return false;
+
+        }
+
+
+        if (
+            active.tagName !==
+            "INPUT"
+        ) {
+
+            return false;
+
+        }
+
+
+        const editor =
+            getElement(
+                "timetableEditor"
+            );
+
+
+        if (!editor) {
+
+            return false;
+
+        }
+
+
+        return editor.contains(
+            active
+        );
+
+    }
+
+
+    /* =====================================================
+       Editor
+    ===================================================== */
 
     function renderEditor(
         targetId = "timetableEditor"
@@ -525,11 +688,21 @@
 
         if (!target) {
 
-            console.warn(
-                `Timetable: #${targetId} が見つかりません。`
-            );
+            return;
+
+        }
+
+
+        /*
+         * 入力中なら再生成しない
+         */
+
+        if (
+            isEditorFocused()
+        ) {
 
             return;
+
         }
 
 
@@ -537,7 +710,10 @@
 
 
         WEEK_KEYS.forEach(
-            (key, dayIndex) => {
+            (
+                key,
+                dayIndex
+            ) => {
 
                 const lessons =
                     getLessons(
@@ -546,11 +722,15 @@
 
 
                 html += `
+
                     <div class="editCard">
 
                         <h3>
+
                             ${WEEK_NAMES[dayIndex]}曜日
+
                         </h3>
+
                 `;
 
 
@@ -572,32 +752,49 @@
 
 
                     html += `
+
                         <div class="lessonEdit">
 
                             <label
                                 for="${key}_${i}"
                             >
+
                                 ${i + 1}限
+
                             </label>
 
+
                             <input
+
                                 type="text"
+
                                 id="${key}_${i}"
+
                                 value="${escapeHTML(
                                     name
                                 )}"
+
                                 placeholder="教科名"
+
                                 autocomplete="off"
+
+                                inputmode="text"
+
                             >
 
                         </div>
+
                     `;
+
                 }
 
 
                 html += `
+
                     </div>
+
                 `;
+
             }
         );
 
@@ -605,19 +802,12 @@
         target.innerHTML =
             html;
 
-
-        /*
-         * 保存・全削除ボタンは
-         * HTML側の #timetableEditor の外にあるため、
-         * ここでは生成しない。
-         */
-        loadEditor();
     }
 
 
-    /* =========================================================
-     * Load Editor
-     * ========================================================= */
+    /* =====================================================
+       Load Editor
+    ===================================================== */
 
     function loadEditor() {
 
@@ -643,7 +833,9 @@
 
 
                     if (!input) {
+
                         continue;
+
                     }
 
 
@@ -652,15 +844,18 @@
                             lessons[i] ??
                             ""
                         );
+
                 }
+
             }
         );
+
     }
 
 
-    /* =========================================================
-     * Read One Day
-     * ========================================================= */
+    /* =====================================================
+       Read One Day
+    ===================================================== */
 
     function readDayEditor(
         dayKey
@@ -682,21 +877,27 @@
 
 
             if (!input) {
-                lessons.push("");
+
+                lessons.push(
+                    ""
+                );
+
                 continue;
+
             }
 
 
             lessons.push(
                 input.value.trim()
             );
+
         }
 
 
         /*
-         * 末尾の空欄を削除して
-         * データをコンパクトにする
+         * 末尾の空欄を削除
          */
+
         while (
             lessons.length > 0 &&
             lessons[
@@ -705,16 +906,18 @@
         ) {
 
             lessons.pop();
+
         }
 
 
         return lessons;
+
     }
 
 
-    /* =========================================================
-     * Save Editor
-     * ========================================================= */
+    /* =====================================================
+       Save Editor
+    ===================================================== */
 
     function saveEditor() {
 
@@ -730,6 +933,7 @@
             );
 
             return false;
+
         }
 
 
@@ -748,14 +952,26 @@
                         dayKey,
                         lessons
                     );
+
                 }
             );
 
 
             /*
-             * 保存後に全表示更新
+             * 保存後は
+             * 入力欄を再生成してよい。
+             *
+             * ここではすでに
+             * データ保存が完了しているため安全。
              */
-            refresh();
+
+            renderTodayClass();
+
+            renderWeekTable();
+
+            renderEditor();
+
+            bindButtons();
 
 
             showMessage(
@@ -769,7 +985,9 @@
 
             return true;
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "Timetable: 保存エラー",
@@ -784,13 +1002,15 @@
 
 
             return false;
+
         }
+
     }
 
 
-    /* =========================================================
-     * Update One Day
-     * ========================================================= */
+    /* =====================================================
+       Update One Day
+    ===================================================== */
 
     function updateDay(
         dayKey
@@ -801,7 +1021,9 @@
                 dayKey
             )
         ) {
+
             return false;
+
         }
 
 
@@ -810,7 +1032,9 @@
             typeof DataAPI.setDayTimetable !==
                 "function"
         ) {
+
             return false;
+
         }
 
 
@@ -828,7 +1052,9 @@
             );
 
 
-            refresh();
+            renderTodayClass();
+
+            renderWeekTable();
 
 
             notifyDataChanged();
@@ -836,7 +1062,9 @@
 
             return true;
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "Timetable: 曜日更新エラー",
@@ -845,13 +1073,15 @@
 
 
             return false;
+
         }
+
     }
 
 
-    /* =========================================================
-     * Clear Editor
-     * ========================================================= */
+    /* =====================================================
+       Clear Editor
+    ===================================================== */
 
     function clearEditor() {
 
@@ -871,17 +1101,22 @@
 
 
                     if (input) {
+
                         input.value = "";
+
                     }
+
                 }
+
             }
         );
+
     }
 
 
-    /* =========================================================
-     * Clear Timetable
-     * ========================================================= */
+    /* =====================================================
+       Clear Timetable
+    ===================================================== */
 
     function clearTimetable() {
 
@@ -897,6 +1132,7 @@
             );
 
             return false;
+
         }
 
 
@@ -907,7 +1143,9 @@
 
 
         if (!confirmed) {
+
             return false;
+
         }
 
 
@@ -935,7 +1173,9 @@
 
             return true;
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "Timetable: 全削除エラー",
@@ -950,13 +1190,15 @@
 
 
             return false;
+
         }
+
     }
 
 
-    /* =========================================================
-     * Button Events
-     * ========================================================= */
+    /* =====================================================
+       Button Events
+    ===================================================== */
 
     function bindButtons() {
 
@@ -983,8 +1225,10 @@
                     event.preventDefault();
 
                     saveEditor();
+
                 }
             );
+
         }
 
 
@@ -1011,31 +1255,52 @@
                     event.preventDefault();
 
                     clearTimetable();
+
                 }
             );
+
         }
+
     }
 
 
-    /* =========================================================
-     * Refresh
-     * ========================================================= */
+    /* =====================================================
+       Refresh
+    ===================================================== */
 
     function refresh() {
+
+        /*
+         * 今日の授業と週間一覧は更新してOK
+         */
 
         renderTodayClass();
 
         renderWeekTable();
 
-        renderEditor();
+
+        /*
+         * ★入力中の場合は
+         * エディタを再生成しない。
+         */
+
+        if (
+            !isEditorFocused()
+        ) {
+
+            renderEditor();
+
+        }
+
 
         bindButtons();
+
     }
 
 
-    /* =========================================================
-     * Notifications
-     * ========================================================= */
+    /* =====================================================
+       Notifications
+    ===================================================== */
 
     function notifyDataChanged() {
 
@@ -1054,19 +1319,23 @@
                 )
             );
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.warn(
                 "Timetable: event dispatch failed.",
                 error
             );
+
         }
+
     }
 
 
-    /* =========================================================
-     * Message
-     * ========================================================= */
+    /* =====================================================
+       Message
+    ===================================================== */
 
     function showMessage(
         message,
@@ -1085,6 +1354,7 @@
             );
 
             return;
+
         }
 
 
@@ -1099,6 +1369,7 @@
             );
 
             return;
+
         }
 
 
@@ -1113,32 +1384,36 @@
             );
 
             return;
+
         }
 
 
         console.log(
             `[Timetable:${type}] ${message}`
         );
+
     }
 
 
-    /* =========================================================
-     * Initialize
-     * ========================================================= */
+    /* =====================================================
+       Initialize
+    ===================================================== */
 
     function init() {
 
         if (initialized) {
 
             /*
-             * app.jsから複数回initされても
-             * ボタンイベントを重複登録しない
+             * 何度initされても
+             * ボタンイベントは重複登録しない
              */
+
             bindButtons();
 
             refresh();
 
             return;
+
         }
 
 
@@ -1154,12 +1429,13 @@
         console.log(
             "School Planner: Timetable initialized."
         );
+
     }
 
 
-    /* =========================================================
-     * Public API
-     * ========================================================= */
+    /* =====================================================
+       Public API
+    ===================================================== */
 
     window.TimetableAPI = {
 
@@ -1168,31 +1444,39 @@
         refresh,
 
         getTodayKey,
+
         getTodayName,
 
         getTodayLessons,
+
         getLessons,
 
         lessonCountToday,
+
         lessonNamesToday,
 
         renderTodayClass,
+
         renderWeekTable,
+
         renderEditor,
 
         saveEditor,
+
         updateDay,
 
         clearEditor,
+
         loadEditor,
 
         clearTimetable
+
     };
 
 
-    /* =========================================================
-     * DOM Ready
-     * ========================================================= */
+    /* =====================================================
+       DOM Ready
+    ===================================================== */
 
     if (
         document.readyState ===
@@ -1207,9 +1491,13 @@
             }
         );
 
-    } else {
+    }
+
+    else {
 
         init();
+
     }
+
 
 })();
