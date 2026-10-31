@@ -885,12 +885,32 @@
 
             /* ---------------------------------
                Ctrl + 4
-               使い方
+               メモ
             --------------------------------- */
 
             if (
                 event.ctrlKey &&
                 event.key === "4"
+            ) {
+
+                event.preventDefault();
+
+                showPage(
+                    "memo"
+                );
+
+                return;
+
+            }
+
+			/* ---------------------------------
+               Ctrl + 5
+               使い方
+            --------------------------------- */
+
+            if (
+                event.ctrlKey &&
+                event.key === "5"
             ) {
 
                 event.preventDefault();
@@ -905,13 +925,13 @@
 
 
             /* ---------------------------------
-               Ctrl + 5
+               Ctrl + 6
                設定
             --------------------------------- */
 
             if (
                 event.ctrlKey &&
-                event.key === "5"
+                event.key === "6"
             ) {
 
                 event.preventDefault();
